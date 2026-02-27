@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+void insert(struct Node** head, int data) {
+    struct Node* newNode = createNode(data);
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    struct Node* temp = *head;
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->next = newNode;
+}
+int getLength(struct Node* head) {
+    int count = 0;
+    while (head != NULL) {
+        count++;
+        head = head->next;
+    }
+    return count;
+}
+int getIntersection(struct Node* head1, struct Node* head2) {
+
+    int len1 = getLength(head1);
+    int len2 = getLength(head2);
+
+    int diff = abs(len1 - len2);
+    struct Node *longer, *shorter;
+    if (len1 > len2) {
+        longer = head1;
+        shorter = head2;
+    } else {
+        longer = head2;
+        shorter = head1;
+    }
+    for (int i = 0; i < diff; i++)
+        longer = longer->next;
+    while (longer != NULL && shorter != NULL) {
+        if (longer == shorter)
+            return longer->data;
+
+        longer = longer->next;
+        shorter = shorter->next;
+    }
+
+    return -1;
+}
